@@ -14,20 +14,22 @@ const root = createRoot(domNode);
 
 const App = () => {
 	return (
-		<main
-			className={clsx(styles.main)}
-			style={
-				{
-					'--font-family': defaultArticleState.fontFamilyOption.value,
-					'--font-size': defaultArticleState.fontSizeOption.value,
-					'--font-color': defaultArticleState.fontColor.value,
-					'--container-width': defaultArticleState.contentWidth.value,
-					'--bg-color': defaultArticleState.backgroundColor.value,
-				} as CSSProperties
-			}>
-			<ArticleParamsForm />
-			<Article />
-		</main>
+		<div className={styles.storybookContainer}>
+			<main
+				className={clsx(styles.main)}
+				style={
+					{
+						'--font-family': defaultArticleState.fontFamilyOption.value,
+						'--font-size': defaultArticleState.fontSizeOption.value,
+						'--font-color': defaultArticleState.fontColor.value,
+						'--container-width': defaultArticleState.contentWidth.value,
+						'--bg-color': defaultArticleState.backgroundColor.value,
+					} as CSSProperties
+				}>
+				<ArticleParamsForm />
+				<Article />
+			</main>
+		</div>
 	);
 };
 
