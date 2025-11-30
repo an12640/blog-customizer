@@ -5,11 +5,21 @@ import styles from './ArticleParamsForm.module.scss';
 import { Select } from 'src/ui/select';
 import { useState } from 'react';
 import { RadioGroup } from 'src/ui/radio-group';
-import { backgroundColors, contentWidthArr, defaultArticleState, fontColors, fontFamilyOptions, fontSizeOptions } from 'src/constants/articleProps';
+import { ArticleStateType, backgroundColors, contentWidthArr, defaultArticleState, fontColors, fontFamilyOptions, fontSizeOptions } from 'src/constants/articleProps';
 import { Separator } from 'src/ui/separator';
 import { StoryDecorator } from 'src/ui/story-decorator';
 
-export const ArticleParamsForm = () => {
+
+type ArticleParamsFormProps = {
+	onApply: (state: ArticleStateType) => void;
+	onReset: () => void;
+};
+
+export const ArticleParamsForm = ({
+	onApply,
+	onReset,
+}:ArticleParamsFormProps) => {
+
 
 	const [selectedFont, setSelectedFont] = useState(defaultArticleState.fontFamilyOption);
 	const [selectedFontSize, setSelectedFontSize] = useState(defaultArticleState.fontSizeOption);
@@ -18,6 +28,25 @@ export const ArticleParamsForm = () => {
 	const [selectedBgColor, setSelectedBgColor] = useState(defaultArticleState.backgroundColor);
 	const [selectedWidth, setSelectedWidth] = useState(defaultArticleState.contentWidth);
 
+	const onSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		onApply({
+			fontFamilyOption: selectedFont,
+			fontSizeOption: selectedFontSize,
+			fontColor: selectedFontColor,
+			backgroundColor: selectedBgColor,
+			contentWidth: selectedWidth});
+	};
+
+	const onResetClick = () => {
+		setSelectedFont(defaultArticleState.fontFamilyOption);
+		setSelectedFontSize(defaultArticleState.fontSizeOption);
+		setSelectedFontColor(defaultArticleState.fontColor);
+		setSelectedBgColor(defaultArticleState.backgroundColor);
+		setSelectedWidth(defaultArticleState.contentWidth);
+
+		onReset();
+	};
 
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -25,7 +54,7 @@ export const ArticleParamsForm = () => {
 		<>
 			<ArrowButton isOpen={isOpen} onClick={() => setIsOpen(prev => !prev)} />
 			<aside className={`${styles.storybookContainer} ${styles.container} ${isOpen ? styles.container_open : ''}`}>
-				<form className={styles.form}>
+				<form className={styles.form} onSubmit={onSubmit}>
 					<Select
 						selected={selectedFont}
 						onChange={setSelectedFont}
@@ -62,7 +91,7 @@ export const ArticleParamsForm = () => {
 					/>
 
 					<div className={styles.bottomContainer}>
-						<Button title="Сбросить" htmlType="reset" type="clear" />
+						<Button title="Сбросить" htmlType="reset" type="clear" onClick={onResetClick} />
 						<Button title="Применить" htmlType="submit" type="apply" />
 					</div>
 				</form>
