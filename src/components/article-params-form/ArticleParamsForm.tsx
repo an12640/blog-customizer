@@ -21,31 +21,26 @@ export const ArticleParamsForm = ({
 }:ArticleParamsFormProps) => {
 
 
-	const [selectedFont, setSelectedFont] = useState(defaultArticleState.fontFamilyOption);
-	const [selectedFontSize, setSelectedFontSize] = useState(defaultArticleState.fontSizeOption);
-
-	const [selectedFontColor, setSelectedFontColor] = useState(defaultArticleState.fontColor);
-	const [selectedBgColor, setSelectedBgColor] = useState(defaultArticleState.backgroundColor);
-	const [selectedWidth, setSelectedWidth] = useState(defaultArticleState.contentWidth);
+	const [selectedParameters, setSelectedParameters] = useState(defaultArticleState);
 
 	const onSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		onApply({
-			fontFamilyOption: selectedFont,
-			fontSizeOption: selectedFontSize,
-			fontColor: selectedFontColor,
-			backgroundColor: selectedBgColor,
-			contentWidth: selectedWidth});
+		onApply(selectedParameters);
 	};
 
 	const onResetClick = () => {
-		setSelectedFont(defaultArticleState.fontFamilyOption);
-		setSelectedFontSize(defaultArticleState.fontSizeOption);
-		setSelectedFontColor(defaultArticleState.fontColor);
-		setSelectedBgColor(defaultArticleState.backgroundColor);
-		setSelectedWidth(defaultArticleState.contentWidth);
-
+		setSelectedParameters(defaultArticleState);
 		onReset();
+	};
+
+	const handleChange = <K extends keyof ArticleStateType>(
+		key: K,
+		option: ArticleStateType[K]
+	) => {
+		setSelectedParameters((prevState) => ({
+			...prevState,
+			[key]: option,
+		}));
 	};
 
 	const [isOpen, setIsOpen] = useState(false);
@@ -56,38 +51,38 @@ export const ArticleParamsForm = ({
 			<aside className={`${styles.storybookContainer} ${styles.container} ${isOpen ? styles.container_open : ''}`}>
 				<form className={styles.form} onSubmit={onSubmit}>
 					<Select
-						selected={selectedFont}
-						onChange={setSelectedFont}
+						selected={selectedParameters.fontFamilyOption}
+						onChange={(value) => handleChange('fontFamilyOption', value)}
 						options={fontFamilyOptions}
 						title="Шрифт"
 					/>
 
 					<RadioGroup
-						selected={selectedFontSize}
+						selected={selectedParameters.fontSizeOption}
 						name="font-size-radio"
-						onChange={setSelectedFontSize}
+						onChange={(value) => handleChange('fontSizeOption', value)}
 						options={fontSizeOptions}
 						title="Размер шрифта"
 					/>
 
 					<Select
-						selected={selectedFontColor}
-						onChange={setSelectedFontColor}
+						selected={selectedParameters.fontColor}
+						onChange={(value) => handleChange('fontColor', value)}
 						options={fontColors}
 						title="Цвет шрифта"
 					/>
 					<Separator />
 					<Select
-						selected={selectedBgColor}
-						onChange={setSelectedBgColor}
+						selected={selectedParameters.backgroundColor}
+						onChange={(value) => handleChange('backgroundColor', value)}
 						options={backgroundColors}
 						title="Цвет фона"
 					/>
 					<Select
-						selected={selectedWidth}
-						onChange={setSelectedWidth}
+						selected={selectedParameters.contentWidth}
+						onChange={(value) => handleChange('contentWidth', value)}
 						options={contentWidthArr}
-						title="Цвет контента"
+						title="Ширина контента"
 					/>
 
 					<div className={styles.bottomContainer}>
