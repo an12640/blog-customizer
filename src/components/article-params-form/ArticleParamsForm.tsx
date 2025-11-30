@@ -3,7 +3,7 @@ import { Button } from 'src/ui/button';
 
 import styles from './ArticleParamsForm.module.scss';
 import { Select } from 'src/ui/select';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RadioGroup } from 'src/ui/radio-group';
 import {
 	ArticleStateType,
@@ -16,6 +16,7 @@ import {
 } from 'src/constants/articleProps';
 import { Separator } from 'src/ui/separator';
 import { StoryDecorator } from 'src/ui/story-decorator';
+import clsx from 'clsx';
 
 type ArticleParamsFormProps = {
 	onApply: (state: ArticleStateType) => void;
@@ -50,14 +51,33 @@ export const ArticleParamsForm = ({
 	};
 
 	const [isOpen, setIsOpen] = useState(false);
+	const sidebarRef = useRef<HTMLElement>(null);
+
+	useEffect(() => {
+		if (!isOpen) return;
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				sidebarRef.current &&
+				!sidebarRef.current.contains(event.target as Node)
+			) {
+				setIsOpen(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [isOpen]);
 
 	return (
 		<>
 			<ArrowButton isOpen={isOpen} onClick={() => setIsOpen((prev) => !prev)} />
 			<aside
-				className={`${styles.storybookContainer} ${styles.container} ${
-					isOpen ? styles.container_open : ''
-				}`}>
+				ref={sidebarRef}
+				className={clsx(styles.storybookContainer, styles.container, {
+					[styles.container_open]: isOpen,
+				})}>
 				<form className={styles.form} onSubmit={onSubmit}>
 					<Select
 						selected={selectedParameters.fontFamilyOption}
